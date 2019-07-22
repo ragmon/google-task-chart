@@ -9,6 +9,7 @@
         "babel-preset-react": "^6.3.13",
         "classnames": "^2.2.3",
         "cordova-android": "^8.0.0",
+        "cordova-sqlite-storage": "^3.2.1",
         "react": "^15.3.0",
         "react-addons-css-transition-group": "^15.3.0",
         "react-dom": "^15.3.0",
