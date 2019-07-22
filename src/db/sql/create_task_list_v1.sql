@@ -1,4 +1,4 @@
-CREATE TABLE `task_lists` (
+CREATE TABLE IF NOT EXISTS `task_lists` (
 	`id` VARCHAR(255),
 	`kind` VARCHAR(255),
 	`selfLink` VARCHAR(255),
@@ -6,4 +6,4 @@ CREATE TABLE `task_lists` (
 	`updated` VARCHAR(50)
 );
 
-CREATE UNIQUE INDEX task_lists_id_primary on task_lists(`id`);
+CREATE UNIQUE INDEX IF NOT EXISTS task_lists_id_primary on task_lists(`id`);
