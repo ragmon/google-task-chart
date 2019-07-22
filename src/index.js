@@ -26,8 +26,8 @@ class App extends Component {
       <Router>
         <Root>
           <Main>
-            <Route exact={true} path="/" component={Home} />
-            <Route path="/welcome" component={Welcome} />
+            <Route path="/home" component={Home} />
+            <Route exact={true} path="/" component={Welcome} />
           </Main>
         </Root>
       </Router>
