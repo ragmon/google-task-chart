@@ -27,7 +27,12 @@ const common = {
         test: /\.jsx?$/,
         loader: 'babel?cacheDirectory',
         include: PATHS.src,
-      }
+      },
+      {
+        test: /\.(png|jpg|gif)$/i,
+        loader: 'url-loader',
+        include: PATHS.src,
+      },
     ]
   }
 };
