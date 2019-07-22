@@ -9,6 +9,9 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 
+import Home from './screen/home/Home';
+import Welcome from './screen/welcome/Welcome';
+
 class App extends Component {
 
   componentWillMount() {
@@ -23,12 +26,8 @@ class App extends Component {
       <Router>
         <Root>
           <Main>
-            <Route exact={true} path="/" render={() => (
-              <h1>Main Screen</h1>
-            )}/>
-            <Route path="/welcome" render={() => (
-              <h1>Welcome</h1>
-            )} />
+            <Route exact={true} path="/" component={Home} />
+            <Route path="/welcome" component={Welcome} />
           </Main>
         </Root>
       </Router>
