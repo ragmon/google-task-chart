@@ -15,7 +15,7 @@ import Welcome from './screen/welcome/Welcome';
 class App extends Component {
 
   componentWillMount() {
-    // Lifecycle function that is triggered just before a component mounts
+    //
   }
   componentWillUnmount() {
     // Lifecycle function that is triggered just before a component unmounts

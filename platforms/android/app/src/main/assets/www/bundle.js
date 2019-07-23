@@ -64,11 +64,15 @@
 
 	var _reactRouterDom = __webpack_require__(193);
 
-	var _Home = __webpack_require__(214);
+	var _config = __webpack_require__(214);
+
+	var _config2 = _interopRequireDefault(_config);
+
+	var _Home = __webpack_require__(215);
 
 	var _Home2 = _interopRequireDefault(_Home);
 
-	var _Welcome = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./screen/welcome/Welcome\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _Welcome = __webpack_require__(216);
 
 	var _Welcome2 = _interopRequireDefault(_Welcome);
 
@@ -93,9 +97,41 @@
 	  }
 
 	  _createClass(App, [{
+	    key: 'gapiAuthenticate',
+	    value: function gapiAuthenticate() {
+	      return gapi.auth2.getAuthInstance().signIn({ scope: "https://www.googleapis.com/auth/tasks https://www.googleapis.com/auth/tasks.readonly" }).then(this.gapiLoadClient, function (err) {
+	        console.error("Error signing in", err);
+	      });
+	    }
+	  }, {
+	    key: 'gapiLoadClient',
+	    value: function gapiLoadClient() {
+	      gapi.client.setApiKey(_config2.default.API_KEY);
+	      return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/tasks/v1/rest").then(function () {
+	        console.log("GAPI client loaded for API");
+	      }, function (err) {
+	        console.error("Error loading GAPI client for API", err);
+	      });
+	    }
+	  }, {
+	    key: 'loadGoogleApi',
+	    value: function loadGoogleApi() {
+	      var script = document.createElement("script");
+	      script.src = "https://apis.google.com/js/client.js";
+
+	      script.onload = function () {
+	        gapi.load("client:auth2", function () {
+	          gapi.auth2.init({ client_id: _config2.default.CLIENT_ID });
+	        });
+	      };
+
+	      document.body.appendChild(script);
+	    }
+	  }, {
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      // Lifecycle function that is triggered just before a component mounts
+	      this.loadGoogleApi();
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -25868,6 +25904,22 @@
 
 /***/ }),
 /* 214 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var config = {
+	  API_KEY: null,
+	  CLIENT_ID: null
+	};
+
+	exports.default = config;
+
+/***/ }),
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25914,6 +25966,94 @@
 	}(_react2.default.Component);
 
 	exports.default = Home;
+
+/***/ }),
+/* 216 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(7);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _config = __webpack_require__(214);
+
+	var _config2 = _interopRequireDefault(_config);
+
+	var _gapi = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../gapi\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+
+	var _gapi2 = _interopRequireDefault(_gapi);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Welcome = function (_React$Component) {
+	  _inherits(Welcome, _React$Component);
+
+	  function Welcome() {
+	    _classCallCheck(this, Welcome);
+
+	    return _possibleConstructorReturn(this, (Welcome.__proto__ || Object.getPrototypeOf(Welcome)).apply(this, arguments));
+	  }
+
+	  _createClass(Welcome, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.GAPI = new _gapi2.default(_config2.default);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      // Lifecycle function that is triggered just before a component unmounts
+	    }
+	  }, {
+	    key: 'authClick',
+	    value: function authClick() {
+	      this.GAPI.signIn(function () {
+	        window.location = '/home';
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          'Welcome'
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          'Login With Google Account'
+	        ),
+	        _react2.default.createElement(
+	          'button',
+	          { className: 'btn btn-primary btn-block', onClick: this.authClick },
+	          'Login'
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Welcome;
+	}(_react2.default.Component);
+
+	exports.default = Welcome;
 
 /***/ })
 /******/ ]);
