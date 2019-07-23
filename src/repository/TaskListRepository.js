@@ -1,9 +1,9 @@
 class TaskListRepository extends Repository {
-  get() {
-    //
+  get(taskList) {
+    return gapi.client.tasks.tasklists.get({taskList});
   }
 
-  list() {
-    //
+  list(data) {
+    return gapi.client.tasks.tasklists.list(data);
   }
 }

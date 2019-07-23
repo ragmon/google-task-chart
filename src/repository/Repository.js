@@ -1,4 +1,4 @@
 class Repository {
-  get(id);
-  list(where, order, limit);
+  get();
+  list();
 }

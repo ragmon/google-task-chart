@@ -1,11 +1,22 @@
 import React from 'react';
 
-class Home extends React.Component {
+const Home = React.createClass({
+
+  state: {
+
+  },
+
   render() {
+    const tasks = this.state.tasks;
+
     return (
-      <h1>Home</h1>
+      <div>
+        <h1>Home</h1>
+        <label>Списки задач</label><br />
+        <TaskLists />
+      </div>
     );
   }
-}
+});
 
 export default Home;

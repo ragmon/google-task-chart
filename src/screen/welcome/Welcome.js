@@ -14,6 +14,10 @@ const Welcome = React.createClass({
   //   this.initGoogleApi();
   // },
 
+  state : {
+    google_auth_status : null
+  },
+
   componentWillMount() {
     this.initGoogleApi();
   },
@@ -32,7 +36,12 @@ const Welcome = React.createClass({
     console.log('authClick');
     this.gapiAuthenticate()
       .then(this.gapiLoadClient)
-      .then(() => this.props.history.push('/home'));
+      .then(() => {
+        this.props.history.push('/home')
+      })
+      .catch(() => {
+        this.setState({ google_auth_status : false });
+      });
   },
 
   gapiAuthenticate() {
