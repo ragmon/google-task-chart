@@ -7,7 +7,7 @@ import './css/index.css';
 
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import { BrowserRouter as Router, Link, Route, HashRouter } from "react-router-dom";
 
 import Home from './screen/home/Home';
 import Welcome from './screen/welcome/Welcome';
@@ -23,14 +23,16 @@ class App extends Component {
 
   render() {
     return (
-      <Router>
+      <HashRouter basename={"/"} hashType={"slash"}>
         <Root>
           <Main>
-            <Route path="/home" component={Home} />
-            <Route exact={true} path="/" component={Welcome} />
+            {/*<HashRouter basename={"/"} hashType={"slash"}>*/}
+              <Route exact={true} path="/" component={Welcome} />
+              <Route path="/home" component={Home} />
+            {/*</HashRouter>*/}
           </Main>
         </Root>
-      </Router>
+      </HashRouter>
     );
   }
 

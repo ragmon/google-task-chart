@@ -1,9 +1,11 @@
-class TaskRepository extends Repository {
-  get(taskList, task) {
-    return gapi.client.tasks.tasks.get({taskList, task});
+class TaskRepository  {
+  static get(data) {
+    return gapi.client.tasks.tasks.get(data);
   }
 
-  list(taskList, ...props) {
-    return gapi.client.tasks.tasks.list({taskList, ...props});
+  static list(data) {
+    return gapi.client.tasks.tasks.list(data);
   }
 }
+
+export default TaskRepository;

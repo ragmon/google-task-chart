@@ -1,19 +1,26 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const TaskLists = React.createClass({
+class TaskLists extends React.Component {
+
+  // propTypes: {
+  //   tasks: PropTypes.arrayOf(PropTypes.object)
+  // },
 
   render() {
     return (
       <table>
         <thead>
-        <th>Title</th>
-        <th>Completed</th>
+        <tr>
+          <th>Title</th>
+          <th>Completed</th>
+        </tr>
         </thead>
         <tbody>
-        {tasks.map(task => (
+        {this.props.tasks && this.props.tasks.map(task => (
           <tr>
             <td>{task.title}</td>
-            <td>{task.complete || '-'}</td>
+            <td>{task.completed || '-'}</td>
           </tr>
         ))}
         </tbody>
@@ -21,6 +28,6 @@ const TaskLists = React.createClass({
     );
   }
 
-});
+}
 
 export default TaskLists;

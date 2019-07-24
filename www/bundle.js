@@ -64,15 +64,11 @@
 
 	var _reactRouterDom = __webpack_require__(193);
 
-	var _config = __webpack_require__(214);
-
-	var _config2 = _interopRequireDefault(_config);
-
-	var _Home = __webpack_require__(215);
+	var _Home = __webpack_require__(214);
 
 	var _Home2 = _interopRequireDefault(_Home);
 
-	var _Welcome = __webpack_require__(216);
+	var _Welcome = __webpack_require__(223);
 
 	var _Welcome2 = _interopRequireDefault(_Welcome);
 
@@ -97,41 +93,9 @@
 	  }
 
 	  _createClass(App, [{
-	    key: 'gapiAuthenticate',
-	    value: function gapiAuthenticate() {
-	      return gapi.auth2.getAuthInstance().signIn({ scope: "https://www.googleapis.com/auth/tasks https://www.googleapis.com/auth/tasks.readonly" }).then(this.gapiLoadClient, function (err) {
-	        console.error("Error signing in", err);
-	      });
-	    }
-	  }, {
-	    key: 'gapiLoadClient',
-	    value: function gapiLoadClient() {
-	      gapi.client.setApiKey(_config2.default.API_KEY);
-	      return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/tasks/v1/rest").then(function () {
-	        console.log("GAPI client loaded for API");
-	      }, function (err) {
-	        console.error("Error loading GAPI client for API", err);
-	      });
-	    }
-	  }, {
-	    key: 'loadGoogleApi',
-	    value: function loadGoogleApi() {
-	      var script = document.createElement("script");
-	      script.src = "https://apis.google.com/js/client.js";
-
-	      script.onload = function () {
-	        gapi.load("client:auth2", function () {
-	          gapi.auth2.init({ client_id: _config2.default.CLIENT_ID });
-	        });
-	      };
-
-	      document.body.appendChild(script);
-	    }
-	  }, {
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      // Lifecycle function that is triggered just before a component mounts
-	      this.loadGoogleApi();
+	      //
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -142,16 +106,16 @@
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
-	        _reactRouterDom.BrowserRouter,
-	        null,
+	        _reactRouterDom.HashRouter,
+	        { basename: "/", hashType: "slash" },
 	        _react2.default.createElement(
 	          Root,
 	          null,
 	          _react2.default.createElement(
 	            Main,
 	            null,
-	            _react2.default.createElement(_reactRouterDom.Route, { path: '/home', component: _Home2.default }),
-	            _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Welcome2.default })
+	            _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Welcome2.default }),
+	            _react2.default.createElement(_reactRouterDom.Route, { path: '/home', component: _Home2.default })
 	          )
 	        )
 	      );
@@ -25904,19 +25868,239 @@
 
 /***/ }),
 /* 214 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var config = {
-	  API_KEY: null,
-	  CLIENT_ID: null
-	};
 
-	exports.default = config;
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(7);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _TaskLists = __webpack_require__(215);
+
+	var _TaskLists2 = _interopRequireDefault(_TaskLists);
+
+	var _TaskSistsSelect = __webpack_require__(216);
+
+	var _TaskSistsSelect2 = _interopRequireDefault(_TaskSistsSelect);
+
+	var _TaskListRepository = __webpack_require__(217);
+
+	var _TaskListRepository2 = _interopRequireDefault(_TaskListRepository);
+
+	var _TaskRepository = __webpack_require__(218);
+
+	var _TaskRepository2 = _interopRequireDefault(_TaskRepository);
+
+	var _GAPI = __webpack_require__(219);
+
+	var _GAPI2 = _interopRequireDefault(_GAPI);
+
+	var _reactGoogleCharts = __webpack_require__(221);
+
+	var _reactGoogleCharts2 = _interopRequireDefault(_reactGoogleCharts);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	// import PieChart from '../../components/charts/PieChart';
+
+
+	var Home = function (_Component) {
+	  _inherits(Home, _Component);
+
+	  // getInitialState() {
+	  //   // this.loadTaskLists();
+	  //
+	  //   return {
+	  //     taskLists: [],
+	  //     tasks: []
+	  //   };
+	  // }
+
+	  function Home(props) {
+	    _classCallCheck(this, Home);
+
+	    // this.clearTasks = this.clearTasks.bind(this);
+
+	    var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props));
+
+	    _this.state = {
+	      task_lists: [],
+	      tasks: []
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Home, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      //
+	      console.log('componentWillMount');
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      // Lifecycle function that is triggered just before a component unmounts
+	      console.log('componentWillUnmount');
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+
+	      console.log('componentDidMount');
+	      //
+	      // this.loadTaskLists();
+	      if (_GAPI2.default.isInit()) {
+	        this.loadTaskLists();
+	      } else {
+	        _GAPI2.default.initGoogleApi().then(function () {
+	          _this2.loadTaskLists();
+	        });
+	      }
+	    }
+
+	    // async loadTaskLists() {
+	    //   const data = {
+	    //     maxResults: 250,
+	    //     pageToken: ''
+	    //   };
+	    //
+	    //   do {
+	    //     let response = await TaskListRepository.list(data);
+	    //     this.setState({taskLists: response.items});
+	    //     data['pageToken'] = response.nextPageToken;
+	    //   }
+	    //   while ('nextPageToken' in response);
+	    // },
+	    //
+	    // async loadTasks() {
+	    //   const data = {
+	    //     maxResults: 250,
+	    //     pageToken: ''
+	    //   };
+	    //
+	    //   do {
+	    //     let response = await TaskRepository.list(data);
+	    //     this.setState({tasks: response.items});
+	    //     data['pageToken'] = response.nextPageToken;
+	    //   } while ('nextPageToken' in response);
+	    // },
+
+	  }, {
+	    key: 'loadTaskLists',
+	    value: function loadTaskLists(nextPageToken) {
+	      var _this3 = this;
+
+	      var data = {
+	        maxResults: 2500
+	        // pageToken: nextPageToken
+	      };
+	      if (nextPageToken) data['pageToken'] = nextPageToken;
+	      _TaskListRepository2.default.list(data).then(function (response) {
+	        console.log('TaskListRepository.list(data).then', response);
+	        _this3.setState({ task_lists: response.result.items });
+	        // Next fetching iteration
+	        if ('nextPageToken' in response && response.items.length > 0) {
+	          console.log(response, response.items.length);
+	          _this3.loadTaskLists(response.nextPageToken);
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'loadTasks',
+	    value: function loadTasks(nextPageToken, tasklist) {
+	      var _this4 = this;
+
+	      var data = {
+	        tasklist: tasklist,
+	        maxResults: 2500,
+	        "showCompleted": true,
+	        // "showDeleted": true,
+	        "showHidden": true
+	        // pageToken: nextPageToken
+	      };
+	      if (nextPageToken) data['pageToken'] = nextPageToken;
+
+	      console.log('loadTasks(nextPageToken, tasklist); data = ', data);
+
+	      _TaskRepository2.default.list(data).then(function (response) {
+	        _this4.setState({ tasks: response.result.items });
+	        // Next fetching iteration
+	        if ('nextPageToken' in response) {
+	          _this4.loadTaskLists(response.nextPageToken, tasklist);
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'clearTasks',
+	    value: function clearTasks() {
+	      this.setState({ tasks: [] });
+	    }
+	  }, {
+	    key: 'onSelectTaskLists',
+	    value: function onSelectTaskLists(e) {
+	      var _this5 = this;
+
+	      var taskListsID = e.target.value;
+	      console.log('onSelectTaskLists', taskListsID);
+
+	      this.clearTasks();
+	      this.loadTasks(null, taskListsID);
+
+	      setTimeout(function () {
+	        return console.log(_this5.state);
+	      }, 3000);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      // this.loadTaskLists();
+
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          'Home'
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: "my-pretty-chart-container" },
+	          _react2.default.createElement(_reactGoogleCharts2.default, {
+	            chartType: 'ScatterChart',
+	            data: [["Age", "Weight"], [4, 5.5], [8, 12]],
+	            width: '100%',
+	            height: '400px',
+	            legendToggle: true
+	          })
+	        ),
+	        _react2.default.createElement(_TaskSistsSelect2.default, { taskLists: this.state.task_lists, onChange: this.onSelectTaskLists.bind(this) }),
+	        _react2.default.createElement(_TaskLists2.default, { tasks: this.state.tasks })
+	      );
+	    }
+	  }]);
+
+	  return Home;
+	}(_react.Component);
+
+	;
+
+	exports.default = Home;
 
 /***/ }),
 /* 215 */
@@ -25934,6 +26118,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _propTypes = __webpack_require__(199);
+
+	var _propTypes2 = _interopRequireDefault(_propTypes);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -25942,33 +26130,820 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Home = function (_React$Component) {
-	  _inherits(Home, _React$Component);
+	var TaskLists = function (_React$Component) {
+	  _inherits(TaskLists, _React$Component);
 
-	  function Home() {
-	    _classCallCheck(this, Home);
+	  function TaskLists() {
+	    _classCallCheck(this, TaskLists);
 
-	    return _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (TaskLists.__proto__ || Object.getPrototypeOf(TaskLists)).apply(this, arguments));
 	  }
 
-	  _createClass(Home, [{
+	  _createClass(TaskLists, [{
 	    key: 'render',
+
+
+	    // propTypes: {
+	    //   tasks: PropTypes.arrayOf(PropTypes.object)
+	    // },
+
 	    value: function render() {
 	      return _react2.default.createElement(
-	        'h1',
+	        'table',
 	        null,
-	        'Home'
+	        _react2.default.createElement(
+	          'thead',
+	          null,
+	          _react2.default.createElement(
+	            'tr',
+	            null,
+	            _react2.default.createElement(
+	              'th',
+	              null,
+	              'Title'
+	            ),
+	            _react2.default.createElement(
+	              'th',
+	              null,
+	              'Completed'
+	            )
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'tbody',
+	          null,
+	          this.props.tasks && this.props.tasks.map(function (task) {
+	            return _react2.default.createElement(
+	              'tr',
+	              null,
+	              _react2.default.createElement(
+	                'td',
+	                null,
+	                task.title
+	              ),
+	              _react2.default.createElement(
+	                'td',
+	                null,
+	                task.completed || '-'
+	              )
+	            );
+	          })
+	        )
 	      );
 	    }
 	  }]);
 
-	  return Home;
+	  return TaskLists;
 	}(_react2.default.Component);
 
-	exports.default = Home;
+	exports.default = TaskLists;
 
 /***/ }),
 /* 216 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(7);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var TaskListsSelect = function TaskListsSelect(_ref) {
+	  var taskLists = _ref.taskLists,
+	      onChange = _ref.onChange;
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    _react2.default.createElement(
+	      'label',
+	      null,
+	      '\u0421\u043F\u0438\u0441\u043A\u0438 \u0437\u0430\u0434\u0430\u0447'
+	    ),
+	    _react2.default.createElement(
+	      'select',
+	      { onChange: onChange },
+	      taskLists && taskLists.map(function (taskList) {
+	        return _react2.default.createElement(
+	          'option',
+	          { value: taskList.id, key: taskList.id },
+	          taskList.title
+	        );
+	      })
+	    )
+	  );
+	};
+
+	exports.default = TaskListsSelect;
+
+/***/ }),
+/* 217 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var TaskListRepository = function () {
+	  function TaskListRepository() {
+	    _classCallCheck(this, TaskListRepository);
+	  }
+
+	  _createClass(TaskListRepository, null, [{
+	    key: "get",
+	    value: function get(taskList) {
+	      return gapi.client.tasks.tasklists.get({ taskList: taskList });
+	    }
+	  }, {
+	    key: "list",
+	    value: function list(data) {
+	      return gapi.client.tasks.tasklists.list(data);
+	    }
+	  }]);
+
+	  return TaskListRepository;
+	}();
+
+	exports.default = TaskListRepository;
+
+/***/ }),
+/* 218 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var TaskRepository = function () {
+	  function TaskRepository() {
+	    _classCallCheck(this, TaskRepository);
+	  }
+
+	  _createClass(TaskRepository, null, [{
+	    key: "get",
+	    value: function get(data) {
+	      return gapi.client.tasks.tasks.get(data);
+	    }
+	  }, {
+	    key: "list",
+	    value: function list(data) {
+	      return gapi.client.tasks.tasks.list(data);
+	    }
+	  }]);
+
+	  return TaskRepository;
+	}();
+
+	exports.default = TaskRepository;
+
+/***/ }),
+/* 219 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _config = __webpack_require__(220);
+
+	var _config2 = _interopRequireDefault(_config);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var GAPI = {
+
+	  __isInit: false,
+
+	  initGoogleApi: function initGoogleApi() {
+	    var _this = this;
+
+	    return new Promise(function (resolve) {
+	      console.log('initGoogleApi');
+	      gapi.load("client:auth2", function () {
+	        gapi.auth2.init({ client_id: _config2.default.CLIENT_ID }).then(_this.gapiAuthenticate).then(resolve);
+	      });
+	    });
+	  },
+	  gapiAuthenticate: function gapiAuthenticate() {
+	    console.log('gapiAuthenticate');
+	    return gapi.auth2.getAuthInstance().signIn({ scope: "https://www.googleapis.com/auth/tasks https://www.googleapis.com/auth/tasks.readonly" }).then(GAPI.gapiLoadClient, function (err) {
+	      console.error("Error signing in", err);
+	      throw err;
+	    });
+	  },
+	  gapiLoadClient: function gapiLoadClient() {
+	    console.log('gapiLoadClient');
+	    gapi.client.setApiKey(_config2.default.API_KEY);
+	    return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/tasks/v1/rest").then(function () {
+	      console.log("GAPI client loaded for API");
+	      GAPI.__isInit = true;
+	    }, function (err) {
+	      console.error("Error loading GAPI client for API", err);
+	      throw err;
+	    });
+	  },
+	  isInit: function isInit() {
+	    return this.__isInit;
+	  }
+	};
+
+	exports.default = GAPI;
+
+/***/ }),
+/* 220 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var config = {
+	  API_KEY: "AIzaSyCUdNEwEI_BSn5Bmcw83wywxhHyo5p_k_U",
+	  CLIENT_ID: "397122980107-fcg3ncgcjdr658idksql9223j6vfgnno.apps.googleusercontent.com"
+	};
+
+	exports.default = config;
+
+/***/ }),
+/* 221 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	var React = __webpack_require__(7);
+	var Script = __webpack_require__(222);
+
+	/*! *****************************************************************************
+	Copyright (c) Microsoft Corporation. All rights reserved.
+	Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+	this file except in compliance with the License. You may obtain a copy of the
+	License at http://www.apache.org/licenses/LICENSE-2.0
+
+	THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+	WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+	MERCHANTABLITY OR NON-INFRINGEMENT.
+
+	See the Apache Version 2.0 License for specific language governing permissions
+	and limitations under the License.
+	***************************************************************************** */
+	/* global Reflect, Promise */
+
+	var extendStatics = function(d, b) {
+	    extendStatics = Object.setPrototypeOf ||
+	        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+	        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+	    return extendStatics(d, b);
+	};
+
+	function __extends(d, b) {
+	    extendStatics(d, b);
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	}
+
+	var __assign = function() {
+	    __assign = Object.assign || function __assign(t) {
+	        for (var s, i = 1, n = arguments.length; i < n; i++) {
+	            s = arguments[i];
+	            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+	        }
+	        return t;
+	    };
+	    return __assign.apply(this, arguments);
+	};
+
+	function __awaiter(thisArg, _arguments, P, generator) {
+	    return new (P || (P = Promise))(function (resolve, reject) {
+	        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+	        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+	        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+	        step((generator = generator.apply(thisArg, _arguments || [])).next());
+	    });
+	}
+
+	function __generator(thisArg, body) {
+	    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+	    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+	    function verb(n) { return function (v) { return step([n, v]); }; }
+	    function step(op) {
+	        if (f) throw new TypeError("Generator is already executing.");
+	        while (_) try {
+	            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+	            if (y = 0, t) op = [op[0] & 2, t.value];
+	            switch (op[0]) {
+	                case 0: case 1: t = op; break;
+	                case 4: _.label++; return { value: op[1], done: false };
+	                case 5: _.label++; y = op[1]; op = [0]; continue;
+	                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+	                default:
+	                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+	                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+	                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+	                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+	                    if (t[2]) _.ops.pop();
+	                    _.trys.pop(); continue;
+	            }
+	            op = body.call(thisArg, _);
+	        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+	        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+	    }
+	}
+
+	var DEFAULT_CHART_COLORS = [
+	    "#3366CC",
+	    "#DC3912",
+	    "#FF9900",
+	    "#109618",
+	    "#990099",
+	    "#3B3EAC",
+	    "#0099C6",
+	    "#DD4477",
+	    "#66AA00",
+	    "#B82E2E",
+	    "#316395",
+	    "#994499",
+	    "#22AA99",
+	    "#AAAA11",
+	    "#6633CC",
+	    "#E67300",
+	    "#8B0707",
+	    "#329262",
+	    "#5574A6",
+	    "#3B3EAC"
+	];
+
+	var ReactGoogleChartsLoader = (function (_super) {
+	    __extends(ReactGoogleChartsLoader, _super);
+	    function ReactGoogleChartsLoader(props) {
+	        var _this = _super.call(this, props) || this;
+	        var documentScripts = document.getElementsByTagName("script");
+	        _this.loadScript = true;
+	        for (var i = 0; i < documentScripts.length; i += 1) {
+	            if (documentScripts[i].src.includes("gstatic.com/charts/loader.js")) {
+	                _this.loadScript = false;
+	            }
+	        }
+	        return _this;
+	    }
+	    ReactGoogleChartsLoader.prototype.componentDidMount = function () {
+	        if (this.loadScript === false) {
+	            this.props.onLoad();
+	        }
+	    };
+	    ReactGoogleChartsLoader.prototype.render = function () {
+	        var _a = this.props, onError = _a.onError, onLoad = _a.onLoad;
+	        if (this.loadScript === true) {
+	            return (React.createElement(Script, { url: "https://www.gstatic.com/charts/loader.js", onError: function () {
+	                    onError();
+	                }, onLoad: onLoad }));
+	        }
+	        else {
+	            return null;
+	        }
+	    };
+	    return ReactGoogleChartsLoader;
+	}(React.Component));
+
+	var _this = undefined;
+	var GRAY_COLOR = "#CCCCCC";
+	var uniqueID = 0;
+	var generateUniqueID = function () {
+	    uniqueID += 1;
+	    return "reactgooglegraph-" + uniqueID;
+	};
+	var chartDefaultProps = {
+	    graph_id: null,
+	    legend_toggle: false,
+	    graphID: null,
+	    options: {
+	        colors: null
+	    },
+	    data: null,
+	    rows: null,
+	    columns: null,
+	    diffdata: null,
+	    chartEvents: null,
+	    legendToggle: false,
+	    chartActions: null,
+	    getChartWrapper: function (chartWrapper, google) { },
+	    className: "",
+	    style: {},
+	    formatters: null,
+	    spreadSheetUrl: null,
+	    spreadSheetQueryParameters: {
+	        headers: 1,
+	        gid: 1
+	    },
+	    rootProps: {}
+	};
+	var loadDataTableFromSpreadSheet = function (googleViz, spreadSheetUrl, urlParams) {
+	    if (urlParams === void 0) { urlParams = {}; }
+	    return __awaiter(_this, void 0, void 0, function () {
+	        return __generator(this, function (_a) {
+	            return [2, new Promise(function (resolve, reject) {
+	                    var headers = "" + (urlParams.headers ? "headers=" + urlParams.headers : "headers=0");
+	                    var queryString = "" + (urlParams.query ? "&tq=" + encodeURIComponent(urlParams.query) : "");
+	                    var gid = "" + (urlParams.gid ? "&gid=" + urlParams.gid : "");
+	                    var sheet = "" + (urlParams.sheet ? "&sheet=" + urlParams.sheet : "");
+	                    var urlQueryString = "" + headers + gid + sheet + queryString;
+	                    var urlToSpreadSheet = spreadSheetUrl + "/gviz/tq?" + urlQueryString;
+	                    var query = new googleViz.visualization.Query(urlToSpreadSheet);
+	                    query.send(function (response) {
+	                        if (response.isError()) {
+	                            reject("Error in query:  " + response.getMessage() + " " + response.getDetailedMessage());
+	                        }
+	                        else {
+	                            resolve(response.getDataTable());
+	                        }
+	                    });
+	                })];
+	        });
+	    });
+	};
+	var Chart = (function (_super) {
+	    __extends(Chart, _super);
+	    function Chart() {
+	        var _this = _super !== null && _super.apply(this, arguments) || this;
+	        _this.state = {
+	            loadingStatus: "loading",
+	            google: null,
+	            hiddenColumns: []
+	        };
+	        _this.graphID = null;
+	        _this.chartWrapper = null;
+	        _this.getGraphID = function () {
+	            var _a = _this
+	                .props, graphID = _a.graphID, graph_id = _a.graph_id;
+	            var instanceGraphID;
+	            if (graphID === null && graph_id === null) {
+	                if (_this.graphID === null) {
+	                    instanceGraphID = generateUniqueID();
+	                }
+	                else {
+	                    instanceGraphID = _this.graphID;
+	                }
+	            }
+	            else if (graphID !== null && graph_id === null) {
+	                instanceGraphID = graphID;
+	            }
+	            else if (graph_id !== null && graphID === null) {
+	                instanceGraphID = graph_id;
+	            }
+	            else {
+	                instanceGraphID = graphID;
+	            }
+	            _this.graphID = instanceGraphID;
+	            return _this.graphID;
+	        };
+	        _this.draw = function () { return __awaiter(_this, void 0, void 0, function () {
+	            var _a, data, diffdata, columns, rows, options, legend_toggle, legendToggle, chartType, formatters, spreadSheetUrl, spreadSheetQueryParameters, dataTable, chartDiff, oldData, newData, columnCount, i, columnID, previousColumnLabel, previousColumnID, previousColumnType, chart;
+	            return __generator(this, function (_b) {
+	                switch (_b.label) {
+	                    case 0:
+	                        if (this.chartWrapper === null || this.state.google === null)
+	                            return [2];
+	                        _a = this.props, data = _a.data, diffdata = _a.diffdata, columns = _a.columns, rows = _a.rows, options = _a.options, legend_toggle = _a.legend_toggle, legendToggle = _a.legendToggle, chartType = _a.chartType, formatters = _a.formatters, spreadSheetUrl = _a.spreadSheetUrl, spreadSheetQueryParameters = _a.spreadSheetQueryParameters;
+	                        chartDiff = null;
+	                        if (diffdata !== null) {
+	                            oldData = this.state.google.visualization.arrayToDataTable(diffdata.old);
+	                            newData = this.state.google.visualization.arrayToDataTable(diffdata.new);
+	                            chartDiff = this.state.google.visualization[chartType].prototype.computeDiff(oldData, newData);
+	                        }
+	                        if (!(data !== null)) return [3, 1];
+	                        if (Array.isArray(data)) {
+	                            dataTable = this.state.google.visualization.arrayToDataTable(data);
+	                        }
+	                        else {
+	                            dataTable = new this.state.google.visualization.DataTable(data);
+	                        }
+	                        return [3, 5];
+	                    case 1:
+	                        if (!(rows !== null && columns !== null)) return [3, 2];
+	                        dataTable = this.state.google.visualization.arrayToDataTable([
+	                            columns
+	                        ].concat(rows));
+	                        return [3, 5];
+	                    case 2:
+	                        if (!(spreadSheetUrl !== null)) return [3, 4];
+	                        return [4, loadDataTableFromSpreadSheet(this.state.google, spreadSheetUrl, spreadSheetQueryParameters)];
+	                    case 3:
+	                        dataTable = (_b.sent());
+	                        return [3, 5];
+	                    case 4:
+	                        dataTable = this.state.google.visualization.arrayToDataTable([]);
+	                        _b.label = 5;
+	                    case 5:
+	                        columnCount = dataTable.getNumberOfColumns();
+	                        for (i = 0; i < columnCount; i += 1) {
+	                            columnID = this.getColumnID(dataTable, i);
+	                            if (this.state.hiddenColumns.includes(columnID)) {
+	                                previousColumnLabel = dataTable.getColumnLabel(i);
+	                                previousColumnID = dataTable.getColumnId(i);
+	                                previousColumnType = dataTable.getColumnType(i);
+	                                dataTable.removeColumn(i);
+	                                dataTable.addColumn({
+	                                    label: previousColumnLabel,
+	                                    id: previousColumnID,
+	                                    type: previousColumnType
+	                                });
+	                            }
+	                        }
+	                        chart = this.chartWrapper.getChart();
+	                        if (this.chartWrapper.getChartType() === "Timeline") {
+	                            chart && chart.clearChart();
+	                        }
+	                        this.chartWrapper.setOptions(options);
+	                        this.chartWrapper.setDataTable(dataTable);
+	                        this.chartWrapper.draw();
+	                        if (chartDiff !== null) {
+	                            this.chartWrapper.setDataTable(chartDiff);
+	                            this.chartWrapper.draw();
+	                        }
+	                        if (formatters !== null) {
+	                            this.applyFormatters(dataTable, formatters);
+	                            this.chartWrapper.setDataTable(dataTable);
+	                            this.chartWrapper.draw();
+	                        }
+	                        if (legendToggle === true || legend_toggle === true) {
+	                            this.grayOutHiddenColumns();
+	                        }
+	                        return [2];
+	                }
+	            });
+	        }); };
+	        _this.applyFormatters = function (dataTable, formatters) {
+	            if (_this.state.google === null)
+	                return;
+	            for (var _i = 0, formatters_1 = formatters; _i < formatters_1.length; _i++) {
+	                var formatter = formatters_1[_i];
+	                switch (formatter.type) {
+	                    case "ArrowFormat": {
+	                        var vizFormatter = new _this.state.google.visualization.ArrowFormat(formatter.options);
+	                        vizFormatter.format(dataTable, formatter.column);
+	                        break;
+	                    }
+	                    case "BarFormat": {
+	                        var vizFormatter = new _this.state.google.visualization.BarFormat(formatter.options);
+	                        vizFormatter.format(dataTable, formatter.column);
+	                        break;
+	                    }
+	                    case "ColorFormat": {
+	                        var vizFormatter = new _this.state.google.visualization.ColorFormat(formatter.options);
+	                        var ranges = formatter.ranges;
+	                        for (var _a = 0, ranges_1 = ranges; _a < ranges_1.length; _a++) {
+	                            var range = ranges_1[_a];
+	                            vizFormatter.addRange.apply(vizFormatter, range);
+	                        }
+	                        vizFormatter.format(dataTable, formatter.column);
+	                        break;
+	                    }
+	                    case "DateFormat": {
+	                        var vizFormatter = new _this.state.google.visualization.DateFormat(formatter.options);
+	                        vizFormatter.format(dataTable, formatter.column);
+	                        break;
+	                    }
+	                    case "NumberFormat": {
+	                        var vizFormatter = new _this.state.google.visualization.NumberFormat(formatter.options);
+	                        vizFormatter.format(dataTable, formatter.column);
+	                        break;
+	                    }
+	                    case "PatternFormat": {
+	                        var vizFormatter = new _this.state.google.visualization.PatternFormat(formatter.options);
+	                        vizFormatter.format(dataTable, formatter.column);
+	                        break;
+	                    }
+	                }
+	            }
+	        };
+	        _this.grayOutHiddenColumns = function () {
+	            if (_this.chartWrapper === null || _this.state.google === null)
+	                return;
+	            var dataTable = _this.chartWrapper.getDataTable();
+	            if (dataTable === null)
+	                return;
+	            var columnCount = dataTable.getNumberOfColumns();
+	            var hasAHiddenColumn = _this.state.hiddenColumns.length > 0;
+	            if (hasAHiddenColumn === false)
+	                return;
+	            var options = _this.props.options;
+	            var colors = Array.from({ length: columnCount - 1 }).map(function (dontcare, i) {
+	                var columnID = _this.getColumnID(dataTable, i + 1);
+	                if (_this.state.hiddenColumns.includes(columnID)) {
+	                    return GRAY_COLOR;
+	                }
+	                else if (typeof options.colors !== "undefined" &&
+	                    options.colors !== null) {
+	                    return options.colors[i];
+	                }
+	                else {
+	                    return DEFAULT_CHART_COLORS[i];
+	                }
+	            });
+	            _this.chartWrapper.setOptions(__assign({}, _this.props.options, { colors: colors }));
+	            _this.chartWrapper.draw();
+	        };
+	        _this.onResize = function () {
+	            if (_this.chartWrapper === null)
+	                return;
+	            _this.chartWrapper.draw();
+	        };
+	        _this.setChartActions = function (currentActions, previousActions) {
+	            if (_this.chartWrapper === null)
+	                return;
+	            var chart = _this.chartWrapper.getChart();
+	            for (var _i = 0, previousActions_1 = previousActions; _i < previousActions_1.length; _i++) {
+	                var chartAction = previousActions_1[_i];
+	                chart.removeAction(chartAction.id);
+	            }
+	            var _loop_1 = function (chartAction) {
+	                chart.setAction({
+	                    id: chartAction.id,
+	                    text: chartAction.text,
+	                    action: function () {
+	                        return chartAction.action(_this.chartWrapper);
+	                    }
+	                });
+	            };
+	            for (var _a = 0, currentActions_1 = currentActions; _a < currentActions_1.length; _a++) {
+	                var chartAction = currentActions_1[_a];
+	                _loop_1(chartAction);
+	            }
+	        };
+	        _this.getColumnID = function (dataTable, columnIndex) {
+	            return (dataTable.getColumnId(columnIndex) ||
+	                dataTable.getColumnLabel(columnIndex));
+	        };
+	        _this.listenToChartEvents = function () {
+	            if (_this.state.google === null || _this.chartWrapper === null) {
+	                return;
+	            }
+	            _this.state.google.visualization.events.removeAllListeners(_this.chartWrapper);
+	            var _a = _this
+	                .props, chartEvents = _a.chartEvents, legend_toggle = _a.legend_toggle, legendToggle = _a.legendToggle;
+	            if (chartEvents !== null) {
+	                var _loop_2 = function (event_1) {
+	                    var eventName = event_1.eventName, callback = event_1.callback;
+	                    _this.state.google.visualization.events.addListener(_this.chartWrapper, eventName, function () {
+	                        var args = [];
+	                        for (var _i = 0; _i < arguments.length; _i++) {
+	                            args[_i] = arguments[_i];
+	                        }
+	                        if (_this.chartWrapper !== null && _this.state.google !== null) {
+	                            callback({
+	                                chartWrapper: _this.chartWrapper,
+	                                props: _this.props,
+	                                google: _this.state.google,
+	                                state: _this.state,
+	                                eventArgs: args
+	                            });
+	                        }
+	                    });
+	                };
+	                for (var _i = 0, chartEvents_1 = chartEvents; _i < chartEvents_1.length; _i++) {
+	                    var event_1 = chartEvents_1[_i];
+	                    _loop_2(event_1);
+	                }
+	            }
+	            if (legendToggle === true || legend_toggle === true) {
+	                _this.listenToLegendToggle();
+	            }
+	        };
+	        _this.listenToLegendToggle = function () {
+	            if (_this.state.google === null || _this.chartWrapper === null) {
+	                return;
+	            }
+	            _this.state.google.visualization.events.addListener(_this.chartWrapper, "select", function () {
+	                if (_this.chartWrapper === null)
+	                    return;
+	                var chart = _this.chartWrapper.getChart();
+	                var selection = chart.getSelection();
+	                var dataTable = _this.chartWrapper.getDataTable();
+	                if (selection.length === 0 ||
+	                    selection[0].row !== null ||
+	                    dataTable === null) {
+	                    return;
+	                }
+	                var columnIndex = selection[0].column;
+	                var columnID = _this.getColumnID(dataTable, columnIndex);
+	                if (_this.state.hiddenColumns.includes(columnID)) {
+	                    _this.setState(function (state) { return (__assign({}, state, { hiddenColumns: state.hiddenColumns.filter(function (colID) { return colID !== columnID; }).slice() })); }, function () {
+	                        _this.draw();
+	                    });
+	                }
+	                else {
+	                    _this.setState(function (state) { return (__assign({}, state, { hiddenColumns: state.hiddenColumns.concat([columnID]) })); }, function () {
+	                        _this.draw();
+	                    });
+	                }
+	            });
+	        };
+	        _this.handleGoogleChartsLoaderScriptLoaded = function (windowGoogleCharts) {
+	            var _a = _this.props, version = _a.chartVersion, packages = _a.chartPackages, language = _a.chartLanguage, mapsApiKey = _a.mapsApiKey;
+	            windowGoogleCharts.charts.load(version || "current", {
+	                packages: packages || ["corechart"],
+	                language: language || "en",
+	                mapsApiKey: mapsApiKey
+	            });
+	            windowGoogleCharts.charts.setOnLoadCallback(function () {
+	                _this.setState(function (state) { return (__assign({}, state, { loadingStatus: "ready", google: windowGoogleCharts })); });
+	            });
+	        };
+	        _this.handleGoogleChartsLoaderScriptErrored = function () {
+	            _this.setState(function (state) { return (__assign({}, state, { loadingStatus: "errored" })); });
+	        };
+	        return _this;
+	    }
+	    Chart.prototype.componentDidMount = function () {
+	        this.setState({ loadingStatus: "loading" });
+	        window.addEventListener("resize", this.onResize);
+	    };
+	    Chart.prototype.componentDidUpdate = function (prevProps, prevState) {
+	        var props = this.props;
+	        if (prevState.loadingStatus !== "ready" &&
+	            this.state.loadingStatus === "ready" &&
+	            this.state.google !== null) {
+	            var chartConfig = {
+	                chartType: this.props.chartType,
+	                options: this.props.options,
+	                containerId: this.getGraphID()
+	            };
+	            this.chartWrapper = new this.state.google.visualization.ChartWrapper(chartConfig);
+	            this.listenToChartEvents();
+	            this.draw();
+	            props.getChartWrapper(this.chartWrapper, this.state.google);
+	            return;
+	        }
+	        if (props.chartEvents !== prevProps.chartEvents) {
+	            this.listenToChartEvents();
+	        }
+	        if (props.chartActions !== null || prevProps.chartActions !== null) {
+	            if (props.chartActions !== prevProps.chartActions) {
+	                this.setChartActions(props.chartActions, prevProps.chartActions);
+	            }
+	        }
+	        if (props.data !== prevProps.data) {
+	            this.draw();
+	        }
+	        if (props.rows !== prevProps.rows || props.columns !== prevProps.columns) {
+	            this.draw();
+	        }
+	    };
+	    Chart.prototype.componentWillUnmount = function () {
+	        if (this.chartWrapper === null || this.state.google === null) {
+	            return;
+	        }
+	        window.removeEventListener("resize", this.onResize);
+	        this.state.google.visualization.events.removeAllListeners(this.chartWrapper);
+	        if (this.chartWrapper.getChartType() === "Timeline") {
+	            this.chartWrapper.getChart() && this.chartWrapper.getChart().clearChart();
+	        }
+	    };
+	    Chart.prototype.render = function () {
+	        var _this = this;
+	        var divStyle = __assign({ height: this.props.height || (this.props.options && this.props.options.height), width: this.props.width || (this.props.options && this.props.options.width) }, this.props.style);
+	        return (React.createElement("div", __assign({ id: this.getGraphID(), style: divStyle, className: this.props.className }, this.props.rootProps),
+	            React.createElement(ReactGoogleChartsLoader, { onError: this.handleGoogleChartsLoaderScriptErrored, onLoad: function () {
+	                    var windowWithGoogle = window;
+	                    if (windowWithGoogle.google) {
+	                        _this.handleGoogleChartsLoaderScriptLoaded(windowWithGoogle.google);
+	                    }
+	                } }),
+	            this.state.loadingStatus === "loading" &&
+	                (this.props.loader ? this.props.loader : "Rendering Chart...")));
+	    };
+	    Chart.defaultProps = chartDefaultProps;
+	    return Chart;
+	}(React.Component));
+
+	exports.Chart = Chart;
+	exports.default = Chart;
+
+
+/***/ }),
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25983,13 +26958,187 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _config = __webpack_require__(214);
+	var _propTypes = __webpack_require__(199);
 
-	var _config2 = _interopRequireDefault(_config);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var _gapi = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../../gapi\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	var _gapi2 = _interopRequireDefault(_gapi);
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Script = function (_React$Component) {
+	  _inherits(Script, _React$Component);
+
+	  // A dictionary mapping script URL to a boolean value indicating if the script
+	  // has failed to load.
+
+
+	  // A dictionary mapping script URLs to a dictionary mapping
+	  // component key to component for all components that are waiting
+	  // for the script to load.
+	  function Script(props) {
+	    _classCallCheck(this, Script);
+
+	    var _this = _possibleConstructorReturn(this, (Script.__proto__ || Object.getPrototypeOf(Script)).call(this, props));
+
+	    _this.scriptLoaderId = 'id' + _this.constructor.idCount++; // eslint-disable-line space-unary-ops, no-plusplus
+	    return _this;
+	  }
+
+	  // A counter used to generate a unique id for each component that uses
+	  // ScriptLoaderMixin.
+
+
+	  // A dictionary mapping script URL to a boolean value indicating if the script
+	  // has already been loaded.
+
+
+	  _createClass(Script, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _props = this.props,
+	          onError = _props.onError,
+	          onLoad = _props.onLoad,
+	          url = _props.url;
+
+
+	      if (this.constructor.loadedScripts[url]) {
+	        onLoad();
+	        return;
+	      }
+
+	      if (this.constructor.erroredScripts[url]) {
+	        onError();
+	        return;
+	      }
+
+	      // If the script is loading, add the component to the script's observers
+	      // and return. Otherwise, initialize the script's observers with the component
+	      // and start loading the script.
+	      if (this.constructor.scriptObservers[url]) {
+	        this.constructor.scriptObservers[url][this.scriptLoaderId] = this.props;
+	        return;
+	      }
+
+	      this.constructor.scriptObservers[url] = _defineProperty({}, this.scriptLoaderId, this.props);
+
+	      this.createScript();
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      var url = this.props.url;
+
+	      var observers = this.constructor.scriptObservers[url];
+
+	      // If the component is waiting for the script to load, remove the
+	      // component from the script's observers before unmounting the component.
+	      if (observers) {
+	        delete observers[this.scriptLoaderId];
+	      }
+	    }
+	  }, {
+	    key: 'createScript',
+	    value: function createScript() {
+	      var _this2 = this;
+
+	      var _props2 = this.props,
+	          onCreate = _props2.onCreate,
+	          url = _props2.url,
+	          attributes = _props2.attributes;
+
+	      var script = document.createElement('script');
+
+	      onCreate();
+
+	      // add 'data-' or non standard attributes to the script tag
+	      if (attributes) {
+	        Object.keys(attributes).forEach(function (prop) {
+	          return script.setAttribute(prop, attributes[prop]);
+	        });
+	      }
+
+	      script.src = url;
+
+	      // default async to true if not set with custom attributes
+	      if (!script.hasAttribute('async')) {
+	        script.async = 1;
+	      }
+
+	      var callObserverFuncAndRemoveObserver = function callObserverFuncAndRemoveObserver(shouldRemoveObserver) {
+	        var observers = _this2.constructor.scriptObservers[url];
+	        Object.keys(observers).forEach(function (key) {
+	          if (shouldRemoveObserver(observers[key])) {
+	            delete _this2.constructor.scriptObservers[url][_this2.scriptLoaderId];
+	          }
+	        });
+	      };
+	      script.onload = function () {
+	        _this2.constructor.loadedScripts[url] = true;
+	        callObserverFuncAndRemoveObserver(function (observer) {
+	          observer.onLoad();
+	          return true;
+	        });
+	      };
+
+	      script.onerror = function () {
+	        _this2.constructor.erroredScripts[url] = true;
+	        callObserverFuncAndRemoveObserver(function (observer) {
+	          observer.onError();
+	          return true;
+	        });
+	      };
+
+	      document.body.appendChild(script);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return null;
+	    }
+	  }]);
+
+	  return Script;
+	}(_react2.default.Component);
+
+	Script.propTypes = {
+	  attributes: _propTypes.PropTypes.object, // eslint-disable-line react/forbid-prop-types
+	  onCreate: _propTypes.PropTypes.func,
+	  onError: _propTypes.PropTypes.func.isRequired,
+	  onLoad: _propTypes.PropTypes.func.isRequired,
+	  url: _propTypes.PropTypes.string.isRequired
+	};
+	Script.defaultProps = {
+	  attributes: {},
+	  onCreate: function onCreate() {},
+	  onError: function onError() {},
+	  onLoad: function onLoad() {} };
+	Script.scriptObservers = {};
+	Script.loadedScripts = {};
+	Script.erroredScripts = {};
+	Script.idCount = 0;
+	exports.default = Script;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 223 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(7);
+
+	var _react2 = _interopRequireDefault(_react);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25999,19 +27148,22 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Welcome = function (_React$Component) {
-	  _inherits(Welcome, _React$Component);
+	var Welcome = function (_Component) {
+	  _inherits(Welcome, _Component);
 
-	  function Welcome() {
+	  function Welcome(props) {
 	    _classCallCheck(this, Welcome);
 
-	    return _possibleConstructorReturn(this, (Welcome.__proto__ || Object.getPrototypeOf(Welcome)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (Welcome.__proto__ || Object.getPrototypeOf(Welcome)).call(this, props));
+
+	    _this.authClick = _this.authClick.bind(_this);
+	    return _this;
 	  }
 
 	  _createClass(Welcome, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      this.GAPI = new _gapi2.default(_config2.default);
+	      // this.initGoogleApi();
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -26019,11 +27171,15 @@
 	      // Lifecycle function that is triggered just before a component unmounts
 	    }
 	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      // this.initGoogleApi();
+	    }
+	  }, {
 	    key: 'authClick',
 	    value: function authClick() {
-	      this.GAPI.signIn(function () {
-	        window.location = '/home';
-	      });
+	      console.log('authClick');
+	      this.props.history.push('/home');
 	    }
 	  }, {
 	    key: 'render',
@@ -26051,7 +27207,7 @@
 	  }]);
 
 	  return Welcome;
-	}(_react2.default.Component);
+	}(_react.Component);
 
 	exports.default = Welcome;
 
