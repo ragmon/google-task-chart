@@ -9,11 +9,11 @@ class TaskLists extends React.Component {
 
   render() {
     return (
-      <table>
+      <table class="table">
         <thead>
         <tr>
-          <th>Title</th>
-          <th>Completed</th>
+          <th scope="col">Title</th>
+          <th scope="col">Completed</th>
         </tr>
         </thead>
         <tbody>

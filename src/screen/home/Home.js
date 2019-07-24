@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import TaskLists from '../../components/tasklists/TaskLists';
 import TaskListsSelect from "../../components/tasklists/TaskSistsSelect";
+import Developers from '../../components/developers/Developers';
 
 import TaskListRepository from '../../repository/TaskListRepository';
 import TaskRepository from '../../repository/TaskRepository';
@@ -30,7 +31,8 @@ class Home extends Component {
       task_lists: [],
       tasks: [],
       tasks_done: 5,
-      tasks_not_done: 3
+      tasks_not_done: 3,
+      showChart : false
     };
   }
 
@@ -130,6 +132,7 @@ class Home extends Component {
     const taskListsID = e.target.value;
     console.log('onSelectTaskLists', taskListsID);
 
+    this.setState({showChart : false});
     this.clearTasks();
     this.loadTasks(null, taskListsID).then(() => this.calcTasksForChart());
 
@@ -149,36 +152,38 @@ class Home extends Component {
 
     this.setState({
       tasks_done: done,
-      tasks_not_done: notDone
+      tasks_not_done: notDone,
+      showChart : true
     });
   }
 
   render() {
-    // this.loadTaskLists();
-
-
     return (
       <div>
-        <h1>Home</h1>
+        <h1>GTask Summary</h1>
         <TaskListsSelect taskLists={this.state.task_lists} onChange={this.onSelectTaskLists.bind(this)}/>
 
-        <Chart
-          // width={'500px'}
-          // height={'300px'}
-          chartType="PieChart"
-          loader={<div>Loading Chart</div>}
-          data={[
-            ['Task', 'Hours per Day'],
-            ['Done', this.state.tasks_done],
-            ['Not Done', this.state.tasks_not_done]
-          ]}
-          options={{
-            title: 'My Daily Activities',
-          }}
-          rootProps={{ 'data-testid': '1' }}
-        />
+        { this.state.showChart ?
+          <Chart
+            // width={'500px'}
+            // height={'300px'}
+            chartType="PieChart"
+            loader={<div>Loading Chart</div>}
+            data={[
+              ['Task', 'Hours per Day'],
+              ['Done', this.state.tasks_done],
+              ['Not Done', this.state.tasks_not_done]
+            ]}
+            options={{
+              title: 'My Daily Activities',
+            }}
+            rootProps={{ 'data-testid': '1' }}
+          />
+          : null  }
+
 
         <TaskLists tasks={this.state.tasks}/>
+        <Developers />
       </div>
     );
   }
