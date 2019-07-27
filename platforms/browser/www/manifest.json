@@ -1,0 +1,12 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "Google Task Chart",
+  "short_name": "Google Task Chart",
+  "version": "io.github.ragmon.googletaskchart",
+  "description": "Hello World sample application using React, Webpack and Hot Reloading.",
+  "author": "Jed Watson and the PhoneGap Team",
+  "icons": [],
+  "orientation": "any",
+  "start_url": "index.html"
+}

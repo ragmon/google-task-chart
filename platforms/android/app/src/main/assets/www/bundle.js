@@ -68,7 +68,7 @@
 
 	var _Home2 = _interopRequireDefault(_Home);
 
-	var _Welcome = __webpack_require__(223);
+	var _Welcome = __webpack_require__(224);
 
 	var _Welcome2 = _interopRequireDefault(_Welcome);
 
@@ -25890,19 +25890,23 @@
 
 	var _TaskSistsSelect2 = _interopRequireDefault(_TaskSistsSelect);
 
-	var _TaskListRepository = __webpack_require__(217);
+	var _Developers = __webpack_require__(217);
+
+	var _Developers2 = _interopRequireDefault(_Developers);
+
+	var _TaskListRepository = __webpack_require__(218);
 
 	var _TaskListRepository2 = _interopRequireDefault(_TaskListRepository);
 
-	var _TaskRepository = __webpack_require__(218);
+	var _TaskRepository = __webpack_require__(219);
 
 	var _TaskRepository2 = _interopRequireDefault(_TaskRepository);
 
-	var _GAPI = __webpack_require__(219);
+	var _GAPI = __webpack_require__(220);
 
 	var _GAPI2 = _interopRequireDefault(_GAPI);
 
-	var _reactGoogleCharts = __webpack_require__(221);
+	var _reactGoogleCharts = __webpack_require__(222);
 
 	var _reactGoogleCharts2 = _interopRequireDefault(_reactGoogleCharts);
 
@@ -25938,7 +25942,10 @@
 
 	    _this.state = {
 	      task_lists: [],
-	      tasks: []
+	      tasks: [],
+	      tasks_done: 5,
+	      tasks_not_done: 3,
+	      showChart: false
 	    };
 	    return _this;
 	  }
@@ -26036,7 +26043,7 @@
 
 	      console.log('loadTasks(nextPageToken, tasklist); data = ', data);
 
-	      _TaskRepository2.default.list(data).then(function (response) {
+	      return _TaskRepository2.default.list(data).then(function (response) {
 	        _this4.setState({ tasks: response.result.items });
 	        // Next fetching iteration
 	        if ('nextPageToken' in response) {
@@ -26057,40 +26064,64 @@
 	      var taskListsID = e.target.value;
 	      console.log('onSelectTaskLists', taskListsID);
 
+	      this.setState({ showChart: false });
 	      this.clearTasks();
-	      this.loadTasks(null, taskListsID);
+	      this.loadTasks(null, taskListsID).then(function () {
+	        return _this5.calcTasksForChart();
+	      });
 
 	      setTimeout(function () {
 	        return console.log(_this5.state);
 	      }, 3000);
 	    }
 	  }, {
+	    key: 'calcTasksForChart',
+	    value: function calcTasksForChart() {
+	      var done = 0;
+	      var notDone = 0;
+	      this.state.tasks.forEach(function (task) {
+	        if ('completed' in task) {
+	          done++;
+	        } else {
+	          notDone++;
+	        }
+	      });
+
+	      this.setState({
+	        tasks_done: done,
+	        tasks_not_done: notDone,
+	        showChart: true
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      // this.loadTaskLists();
-
-
 	      return _react2.default.createElement(
 	        'div',
 	        null,
 	        _react2.default.createElement(
 	          'h1',
 	          null,
-	          'Home'
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: "my-pretty-chart-container" },
-	          _react2.default.createElement(_reactGoogleCharts2.default, {
-	            chartType: 'ScatterChart',
-	            data: [["Age", "Weight"], [4, 5.5], [8, 12]],
-	            width: '100%',
-	            height: '400px',
-	            legendToggle: true
-	          })
+	          'GTask Summary'
 	        ),
 	        _react2.default.createElement(_TaskSistsSelect2.default, { taskLists: this.state.task_lists, onChange: this.onSelectTaskLists.bind(this) }),
-	        _react2.default.createElement(_TaskLists2.default, { tasks: this.state.tasks })
+	        this.state.showChart ? _react2.default.createElement(_reactGoogleCharts2.default
+	        // width={'500px'}
+	        // height={'300px'}
+	        , { chartType: 'PieChart',
+	          loader: _react2.default.createElement(
+	            'div',
+	            null,
+	            'Loading Chart'
+	          ),
+	          data: [['Task', 'Hours per Day'], ['Done', this.state.tasks_done], ['Not Done', this.state.tasks_not_done]],
+	          options: {
+	            title: 'My Daily Activities'
+	          },
+	          rootProps: { 'data-testid': '1' }
+	        }) : null,
+	        _react2.default.createElement(_TaskLists2.default, { tasks: this.state.tasks }),
+	        _react2.default.createElement(_Developers2.default, null)
 	      );
 	    }
 	  }]);
@@ -26150,7 +26181,7 @@
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'table',
-	        null,
+	        { className: "table table-striped" },
 	        _react2.default.createElement(
 	          'thead',
 	          null,
@@ -26159,12 +26190,12 @@
 	            null,
 	            _react2.default.createElement(
 	              'th',
-	              null,
+	              { scope: 'col' },
 	              'Title'
 	            ),
 	            _react2.default.createElement(
 	              'th',
-	              null,
+	              { scope: 'col' },
 	              'Completed'
 	            )
 	          )
@@ -26184,7 +26215,7 @@
 	              _react2.default.createElement(
 	                'td',
 	                null,
-	                task.completed || '-'
+	                task.completed ? new Date(task.completed).toDateString() : '-'
 	              )
 	            );
 	          })
@@ -26202,7 +26233,7 @@
 /* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -26218,19 +26249,24 @@
 	  var taskLists = _ref.taskLists,
 	      onChange = _ref.onChange;
 	  return _react2.default.createElement(
-	    'div',
-	    null,
+	    "div",
+	    { className: "form-group" },
 	    _react2.default.createElement(
-	      'label',
-	      null,
-	      '\u0421\u043F\u0438\u0441\u043A\u0438 \u0437\u0430\u0434\u0430\u0447'
+	      "label",
+	      { htmlFor: "tasks_lists_select" },
+	      "\u0421\u043F\u0438\u0441\u043A\u0438 \u0437\u0430\u0434\u0430\u0447"
 	    ),
 	    _react2.default.createElement(
-	      'select',
-	      { onChange: onChange },
+	      "select",
+	      { id: "tasks_lists_select", className: "form-control", onChange: onChange },
+	      _react2.default.createElement(
+	        "option",
+	        { value: null },
+	        "-"
+	      ),
 	      taskLists && taskLists.map(function (taskList) {
 	        return _react2.default.createElement(
-	          'option',
+	          "option",
 	          { value: taskList.id, key: taskList.id },
 	          taskList.title
 	        );
@@ -26243,6 +26279,71 @@
 
 /***/ }),
 /* 217 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(7);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Developers = function (_React$Component) {
+	  _inherits(Developers, _React$Component);
+
+	  function Developers() {
+	    _classCallCheck(this, Developers);
+
+	    return _possibleConstructorReturn(this, (Developers.__proto__ || Object.getPrototypeOf(Developers)).apply(this, arguments));
+	  }
+
+	  _createClass(Developers, [{
+	    key: "render",
+	    value: function render() {
+	      return _react2.default.createElement(
+	        "div",
+	        null,
+	        _react2.default.createElement("hr", null),
+	        _react2.default.createElement(
+	          "h4",
+	          null,
+	          "Developers"
+	        ),
+	        _react2.default.createElement(
+	          "a",
+	          { href: "mailto:arthur.ragimov@gmail.com" },
+	          "arthur.ragimov@gmail.com"
+	        ),
+	        _react2.default.createElement("br", null),
+	        _react2.default.createElement(
+	          "a",
+	          { href: "mailto:gennadiy.murzhi@gmail.com" },
+	          "gennadiy.murzhi@gmail.com"
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Developers;
+	}(_react2.default.Component);
+
+	exports.default = Developers;
+
+/***/ }),
+/* 218 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -26278,7 +26379,7 @@
 	exports.default = TaskListRepository;
 
 /***/ }),
-/* 218 */
+/* 219 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -26314,7 +26415,7 @@
 	exports.default = TaskRepository;
 
 /***/ }),
-/* 219 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -26323,7 +26424,7 @@
 	  value: true
 	});
 
-	var _config = __webpack_require__(220);
+	var _config = __webpack_require__(221);
 
 	var _config2 = _interopRequireDefault(_config);
 
@@ -26369,7 +26470,7 @@
 	exports.default = GAPI;
 
 /***/ }),
-/* 220 */
+/* 221 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -26385,7 +26486,7 @@
 	exports.default = config;
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26393,7 +26494,7 @@
 	Object.defineProperty(exports, '__esModule', { value: true });
 
 	var React = __webpack_require__(7);
-	var Script = __webpack_require__(222);
+	var Script = __webpack_require__(223);
 
 	/*! *****************************************************************************
 	Copyright (c) Microsoft Corporation. All rights reserved.
@@ -26943,7 +27044,7 @@
 
 
 /***/ }),
-/* 222 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27125,7 +27226,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 223 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';

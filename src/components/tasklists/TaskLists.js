@@ -9,7 +9,7 @@ class TaskLists extends React.Component {
 
   render() {
     return (
-      <table class="table">
+      <table className={"table table-striped"}>
         <thead>
         <tr>
           <th scope="col">Title</th>
@@ -20,7 +20,7 @@ class TaskLists extends React.Component {
         {this.props.tasks && this.props.tasks.map(task => (
           <tr>
             <td>{task.title}</td>
-            <td>{task.completed || '-'}</td>
+            <td>{task.completed ? new Date(task.completed).toDateString() : '-'}</td>
           </tr>
         ))}
         </tbody>
