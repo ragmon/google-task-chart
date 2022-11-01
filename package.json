@@ -27,7 +27,7 @@
         "babel-preset-react-hmre": "^1.0.1",
         "css-loader": "^0.23.1",
         "elementtree": "^0.1.6",
-        "replace": "^0.3.0",
+        "replace": "^1.2.2",
         "style-loader": "^0.13.0",
         "webpack-merge": "^0.7.3"
     },
